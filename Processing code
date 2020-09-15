@@ -1,0 +1,231 @@
+import controlP5.*; //importing the controlP5 library to use GUIs easily
+import processing.serial.*; // import the processing.serial for enabling serial communication with the esp32 dev board
+
+Serial port;
+String portName;
+String data = "";
+boolean contact = false;
+int onColor = #FF0000; //red color for the on state of LED's
+int offColor = 153; //grey color for the off state of LED's
+int ledState = 153; //led 1
+int ledState1 = 153; // led2
+int ledState2 = 153; // led3
+int ledState3 = 153; //led4
+int state=0;
+String string=""; 
+String scanned="";
+ControlP5 cp5;
+PFont font;
+
+
+
+//String received="";
+
+void setup()
+{
+  size(400, 200);//making the canvas size
+  
+  portName = Serial.list()[0];
+  
+  port = new Serial(this, portName, 115200);
+  port.bufferUntil('\n');
+  
+  cp5 = new ControlP5(this);
+  font = createFont("calibri bold", 30);
+  
+
+ 
+  
+}
+
+void draw()
+{
+  background(169,0,255);//giving the background a purple colour
+  fill(0,0,0);
+  textFont(font);
+  text("LED CONTROL",115,20); 
+  fill(ledState);//filling the circles with a red colour for ON STATE
+  ellipse(150,55,25,25);//placing LED 1
+  fill(ledState1);
+  ellipse(180,55,25,25);//placing LED 2
+  fill(ledState2);
+  ellipse(215,55,25,25);//placing LED 3
+  fill(ledState3);
+  ellipse(245,55,25,25);//placing LED 4
+  fill(0,255,0);
+  rect(0,100,400,200);
+  fill(0,0,0);
+  textFont(font);
+  text("Decimal: "+string,125,100);
+ 
+}
+
+void mouseClicked()
+{
+  if(mouseX >= 1 && mouseX <= 399 && mouseY >= 201 && mouseY <= 399)
+  {
+    if(state == 0)
+  {
+    ledState = onColor;
+    state = 1;  
+  }
+  else
+  {
+    state = 0;
+  }
+  port.clear();
+  port.write(state);
+  if(state == 1)
+  {
+    ledState = onColor;
+  }
+  else
+  {
+    ledState = offColor;
+  }
+  }
+  
+}
+
+void serialEvent(Serial p){
+  data = p.readString();
+  if(data != null && data != ""){
+  
+    data = data.trim();
+    println(data);
+ 
+    if(!contact)
+    {
+      contact = true;
+      p.clear();
+      p.write('B');
+ 
+    }
+    else
+    {
+      if(scanned == "1")
+      {
+          switch(data)
+      {
+        case "0000":
+        string = "0";
+        ledState = offColor;
+        ledState1 = offColor;
+        ledState2 = offColor;
+        ledState3 = offColor;
+        break;
+        case "0001":
+        string = "1";
+        ledState = offColor;
+        ledState1 = offColor;
+        ledState2 = offColor;
+        ledState3 = onColor;
+        break;
+        case "0010":
+        string = "2";
+        ledState = offColor;
+        ledState1 = offColor;
+        ledState2 = onColor;
+        ledState3 = offColor;
+        break;
+        case "0011":
+        string = "3";
+        ledState = offColor;
+        ledState1 = offColor;
+        ledState2 = onColor;
+        ledState3 = onColor;
+        break;
+        case "0100":
+        string = "4";
+        ledState = offColor;
+        ledState1 = onColor;
+        ledState2 = offColor;
+        ledState3 = offColor;
+        break;
+        case "0101":
+        string = "5";
+        ledState = offColor;
+        ledState1 = onColor;
+        ledState2 = offColor;
+        ledState3 = onColor;
+        break;
+        case "0110":
+        string = "6";
+        ledState = offColor;
+        ledState1 = onColor;
+        ledState2 = onColor;
+        ledState3 = offColor;
+        break;
+        case "0111":
+        string = "7";
+        ledState = offColor;
+        ledState1 = onColor;
+        ledState2 = onColor;
+        ledState3 = onColor;
+        break;
+        case "1000":
+        string = "8";
+        ledState = onColor;
+        ledState1 = offColor;
+        ledState2 = offColor;
+        ledState3 = offColor;
+        break;
+        case "1001":
+        string = "9";
+        ledState = onColor;
+        ledState1 = offColor;
+        ledState2 = offColor;
+        ledState3 = onColor;
+        break;
+        case "1010":
+        string = "10";
+        ledState = onColor;
+        ledState1 = offColor;
+        ledState2 = onColor;
+        ledState3 = offColor;
+        break;
+        case "1011":
+        string = "11";
+        ledState = onColor;
+        ledState1 = offColor;
+        ledState2 = onColor;
+        ledState3 = onColor;
+        break;
+        case "1100":
+        string = "12";
+        ledState = onColor;
+        ledState1 = onColor;
+        ledState2 = offColor;
+        ledState3 = offColor;
+        break;
+        case "1101":
+        string = "13";
+        ledState = onColor;
+        ledState1 = onColor;
+        ledState2 = offColor;
+        ledState3 = onColor;
+        break;
+        case "1110":
+        string = "14";
+        ledState = onColor;
+        ledState1 = onColor;
+        ledState2 = onColor;
+        ledState3 = offColor;
+        break;
+         case "1111":
+        string = "15";
+        ledState = onColor;
+        ledState1 = onColor;
+        ledState2 = onColor;
+        ledState3 = onColor;
+        break;
+        default:
+        break;
+      }
+      
+      }
+      
+    }
+    
+  }
+}
