@@ -1,0 +1,56 @@
+int pin1= 13, pin2=26,pin3=2,pin4=25;//DECLARING PINS FOR INPUT
+int led; //DECLARING INT TO CAPTURE DATA FROM THE INPUT
+int pin5 = 15; //For the push button switch used as a scanner/reader for update
+String datas;
+int scan;
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(pin4, INPUT);
+  pinMode(pin3, INPUT);
+  pinMode(pin2, INPUT);
+  pinMode(pin1, INPUT); 
+  pinMode(pin5, INPUT);
+
+  Serial.begin(115200); //SET THE BUAD RATE TO MATCH THE SPEED OF ESP32 DEV BOARD
+  handShake();//CALL THE FUNCTION FOR CONNECTING THE ESP32 DEV BOARD WITH PROCESSING
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  scan = digitalRead(pin5);
+  Serial.print(scan);
+
+  if(pin5 == HIGH)
+  {
+    // READ YOUR INPUTS AND ASSIGN THEM TO led
+    led = digitalRead(pin1);
+    Serial.print(led); 
+    led = digitalRead(pin3);
+    Serial.print(led);
+    led = digitalRead(pin2);
+    Serial.print(led);
+    led = digitalRead(pin4);
+    Serial.println(led);
+  }
+  
+  
+
+}
+
+
+
+void handShake()
+{
+    while(Serial.available()<= 0) 
+    {
+      Serial.println('A');
+      delay(300);
+    }
+    if(Serial.read() == 'B')
+    {
+      Serial.println(datas);
+      
+    }
+}
